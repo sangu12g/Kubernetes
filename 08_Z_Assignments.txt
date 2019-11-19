@@ -86,49 +86,5 @@ spec:
     configMap:
        name: candy-service-config
        items:
-        - key: candy-service
+        - key: config
           path: candy.cfg
-		  
-		  
-error :
-
-Warning  FailedMount  60s                 
-kubelet, node01    Unable to mount volumes for pod "candy-service_default(1fc9e553-076d-11ea-b3d1-0242ac11003c)": 
-timeout expired waiting for volumes to attach or mount for pod "default"/"candy-service". list of unmounted volumes=[candy-service-config].
- list of unattached volumes=[candy-service-config default-token-rchlq]
-  Warning  FailedMount  56s (x9 over 3m3s)  kubelet, node01   
-  MountVolume.SetUp failed for volume "candy-service-config" : configmap references non-existent config key: candy-service
-		  
-		  
-apiVersion: v1
-kind: Pod
-metadata:
-  name: candy-service
-  labels:
-    app: web
-spec:
-  securityContext:
-    fsGroup: 2000
-  containers:
-  - name: candy-service-ctr
-    image: linuxacademycontent/candy-service:1
-    env:
-    - name: db-password
-      valueFrom:
-        secretKeyRef:
-          name: db-password
-          key: mykey
-    resources:
-      requests:
-        memory: "64Mi"
-        cpu: "250m"
-      limits:
-        cpu: "500m"
-        memory: "128Mi"
-    volumeMounts:
-    - name: candy-service-config
-      mountPath: /etc/candy-service
-  volumes:
-  - name: candy-service-config
-    hostPath:
-      path: /etc/candy-service 

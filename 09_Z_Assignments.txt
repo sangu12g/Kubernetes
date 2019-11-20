@@ -55,3 +55,58 @@ Use this command to access fruit-service using port 80 from within the busybox p
 
 kubectl exec busybox -- curl $(kubectl get pod fruit-service -o=custom-columns=IP:.status.podIP --no-headers):80
 If the service is working, you should see some JSON listing various types of fruit.
+
+
+# creating the configmap 
+
+vi fruit-service-ambassador-config.yml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fruit-service-ambassador-config
+  namespace: default
+data:
+  config: |
+    global
+        daemon
+        maxconn 256
+
+    defaults
+        mode http
+        timeout connect 5000ms
+        timeout client 50000ms
+        timeout server 50000ms
+
+    listen http-in
+        bind *:80
+        server server1 127.0.0.1:8775 maxconn 32
+
+#creating the multi-container pod which provides access to the legacy service on port 80
+vi fruit-service.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fruit-service
+  labels:
+    app: my-app
+spec:
+  containers:
+  - name: fruit-ctr
+    image: linuxacademycontent/legacy-fruit-service:1
+  - name: ambassador
+    image: haproxy:1.7
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: fruit-service-ambassador-config
+      mountPath: /usr/local/etc/haproxy
+  volumes:
+  - name: fruit-service-ambassador-config
+    configMap:
+       name: fruit-service-ambassador-config
+       items:
+        - key: config
+          path: haproxy.cfg
+          

@@ -14,9 +14,11 @@ metadata:
   name: cleanup-cronjob
 spec:
   schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
-      ttlSecondsAfterFinished: 1	
       template:
         spec:
           containers:

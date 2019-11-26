@@ -61,7 +61,7 @@ spec:
   ports:
   - name: http
 	port: 8080
-        targetPort: 8080
+        targetPort: 80
 	nodePort: 30036
 	protocol: TCP
 	
@@ -105,7 +105,7 @@ spec:
   ports:
   - name: http
 	port: 8080
-    targetPort: 8080
+    targetPort: 80
 	protocol: TCP
 		
 		

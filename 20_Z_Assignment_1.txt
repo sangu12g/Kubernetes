@@ -43,6 +43,9 @@ spec:
       containers:
       - name: my-ctr
         image: nginx:1.7.1
+	ports:
+        - name: http-port
+          containerPort: 80
 		
 vi auth-svc.yml
 
@@ -58,7 +61,7 @@ spec:
   ports:
   - name: http
 	port: 8080
-    targetPort: 8080
+        targetPort: 8080
 	nodePort: 30036
 	protocol: TCP
 	
@@ -83,7 +86,9 @@ spec:
       containers:
       - name: my-ctr
         image: nginx:1.7.1
-
+        ports:
+        - name: http-port
+          containerPort: 80
 
 
 vi data-svc.yml

@@ -14,8 +14,30 @@ Your team has asked you to take the lead in debugging the issue. They want you t
 
 You will need to do the following:
 
+kubectl create namespace nginx-ns
+
 Find the broken pod and save the pod name to the file /home/cloud_user/debug/broken-pod-name.txt.
+
+#run the below command and check the status of pod if pod is not rening then it is broken pod
+kubectl get pod nginx -n nginx-ns -o name > broken-pod-name.txt
+
 In the same namespace as the broken pod, find out which pod is using the most CPU and output the name of that pod to the file /home/cloud_user/debug/high-cpu-pod-name.txt.
+
+git clone https://github.com/linuxacademy/metrics-server
+kubectl apply -f metrics-server/deploy/1.8+/
+kubectl get --raw /apis/metrics.k8s.io/
+kubectl top pods > high-cpu-pod-name.txt
+
+output:
+master $ cat high-cpu-pod-name.txt
+NAME                  CPU(cores)   MEMORY(bytes)
+multi-container-pod   0m           1Mi
+
 Get the broken pod's summary data in the JSON format and output it to the file /home/cloud_user/debug/broken-pod-summary.json.
+
+kubectl get pod nginx -n nginx-ns -o json > broken-pod-summary.json
+
 Get the broken pod's container logs and output them to the file /home/cloud_user/debug/broken-pod-logs.log.
+kubectl logs nginx -n nginx-ns > broken-pod-logs.log
+
 Fix the problem with the broken pod so that it enters the Running state.

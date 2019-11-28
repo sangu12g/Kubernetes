@@ -110,6 +110,12 @@ spec:
         - key: config
           path: haproxy.cfg
           
+          
+          
+# to check the data /usr/local/etc/haproxy
+
+kubectl exec fruit-service -c ambassador -- cat /usr/local/etc/haproxy/haproxy.cfg
+          
   
   
   master $ kubectl exec busybox -- curl $(kubectl get pod fruit-service -o=custom-columns=IP:.status.podIP --no-headers):80
